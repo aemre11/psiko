@@ -1,0 +1,19 @@
+# Python derleme dosyaları
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Sanal ortam (Virtual Environment) klasörleri (eğer kurduysanız)
+venv/
+.venv/
+env/
+
+# Kullanıcının yükleyeceği veya test edeceği veri dosyaları (Çok Önemli!)
+*.xlsx
+*.xls
+*.csv
+
+# Streamlit ve IDE ayarları
+.streamlit/config.toml
+.vscode/
+.idea/

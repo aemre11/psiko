@@ -1,0 +1,9 @@
+streamlit
+pandas
+openpyxl
+pingouin
+statsmodels
+scipy
+python-docx
+matplotlib
+seaborn

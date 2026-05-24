@@ -1,0 +1,35 @@
+---
+description: Standing Streamlit session-state and widget rules for PsychStats
+globs: psych_stats/**/*.py
+alwaysApply: true
+---
+
+# Streamlit rules — prepend to every change in this project
+
+1. **Never write to widget-backed session state key inside `on_change`** — use pending flag pattern; consume at top of render before widgets instantiate.
+2. **Every rerun-surviving widget needs stable `key=`** initialized at startup (`init_session_state()` or step init). Never rely on implicit widget state.
+3. **Never call `st.rerun()` inside a callback** — set a flag; let the natural rerun handle it.
+4. **Clear only downstream state keys**, never upstream keys that back currently visible widgets.
+5. **Loop-rendered widgets use index-stable keys** — e.g. `f"scale_name_{i}"`, `f"short_label_{i}"` where `i` is positional and consistent across reruns.
+6. **Always use `.get(key, default)` when reading nested dicts from session state** — never assume shape.
+7. **Never store class instances in session state** — instantiate fresh each run.
+8. **On file upload, unconditionally overwrite `KEY_RAW_DF`** — never conditional on `"if not set"`.
+9. **List item action buttons use stable unique ID keys**, not positional index keys — e.g. `f"delete_composite_{comp_id}"` where `comp_id` is stored on the item.
+
+## Pending-flag reference
+
+```python
+def _on_scale_name_change() -> None:
+    st.session_state["pending_resync_short_labels"] = True
+
+if st.session_state.get("pending_resync_labels"):
+    _resync_all_auto_short_labels(column_count)
+    st.session_state["pending_resync_labels"] = False
+```
+
+## Composite list items
+
+```python
+comp = {"id": "perfectionism_total", "name": "Perfectionism_Total", "columns": [...], "method": "sum"}
+st.button("Delete", key=f"delete_composite_{comp['id']}")
+```
