@@ -339,9 +339,20 @@ inject_layout_css()
 # ---------------------------------------------------------------------------
 if not st.session_state.get("_authenticated", False):
     st.title("🧬 PsychStats")
+    # Fail closed: if the app_password secret isn't configured, never grant access —
+    # show a clear message and stop, instead of crashing with a raw
+    # StreamlitSecretNotFoundError at whoever opens the app.
+    try:
+        _expected_pw = st.secrets["app_password"]
+    except Exception:
+        st.error(
+            "Uygulama yapılandırılmamış: erişim parolası tanımlı değil. "
+            "Lütfen sistem yöneticisiyle iletişime geçin."
+        )
+        st.stop()
     _pw = st.text_input("Parola", type="password", key="_auth_password")
     if _pw:
-        if _pw == st.secrets["app_password"]:
+        if _pw == _expected_pw:
             st.session_state["_authenticated"] = True
             st.rerun()
         else:
