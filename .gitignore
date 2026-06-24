@@ -12,8 +12,10 @@ env/
 *.xlsx
 *.xls
 *.csv
+*.sav
 
 # Streamlit ve IDE ayarları
 .streamlit/config.toml
+.streamlit/secrets.toml
 .vscode/
 .idea/
