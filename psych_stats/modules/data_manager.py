@@ -1556,7 +1556,11 @@ def _build_session_zip_bytes(final_df: pd.DataFrame) -> bytes:
     raw_df = st.session_state.get(KEY_RAW_DF)
     if raw_df is None:
         raise ValueError("No source data available to save.")
-    source_df = _build_analysis_dataframe(raw_df)
+    # Save the RECODED/numeric source (recode applied, reverse not yet) so the restore
+    # replay — _apply_reverse_config_to_dataframe in _finalize_full_session_after_load —
+    # operates on numbers, matching the fresh path. Saving the un-recoded text source
+    # would crash reverse scoring with int − str on text-Likert data.
+    source_df = _build_recoded_analysis_dataframe(raw_df)
     buf = BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         config_json = json.dumps(_export_config_dict(), indent=2, ensure_ascii=False)
@@ -1660,7 +1664,8 @@ def _finalize_full_session_after_load(
     ss[KEY_UPLOAD_DONE] = True
     ss[KEY_ROLES_CONFIRMED] = True
     ss[KEY_MAPPING_DONE] = True
-    # The saved source CSV is already recoded/numeric, so recoding is effectively done.
+    # The saved source CSV is recoded/numeric (written via _build_recoded_analysis_dataframe
+    # in _build_session_zip_bytes), so recoding is effectively done.
     ss[KEY_RECODE_DONE] = True
     ss[KEY_RECODE_PRIMED] = False
     ss[KEY_REVERSE_DONE] = True
