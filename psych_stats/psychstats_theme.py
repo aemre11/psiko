@@ -1298,6 +1298,40 @@ table.ps-table tr:hover td { background-color: rgba(255,255,255,0.025); }
                 background-color var(--t-normal) !important;
 }
 
+/* Translate uploader button label (Streamlit 1.57 uses stBaseButton-secondary). */
+[data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"] {
+    position: relative !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+}
+[data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"] * {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: none !important;
+}
+[data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"] svg,
+[data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"] svg * {
+    font-size: initial !important;
+    line-height: initial !important;
+    color: var(--color-text-primary) !important; /* keep icon visible */
+    fill: currentColor !important;
+    stroke: currentColor !important;
+}
+[data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"]::after {
+    content: "Yükle" !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-35%, -50%) !important;
+    color: var(--color-text-primary) !important;
+    pointer-events: none !important;
+    font-size: var(--text-small) !important;
+    line-height: 1 !important;
+    font-weight: var(--weight-semibold) !important;
+}
+
 [data-testid="stFileUploader"]:hover {
     border-color: var(--color-accent) !important;
     background-color: var(--color-accent-subtle) !important;
